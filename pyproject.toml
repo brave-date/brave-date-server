@@ -1,0 +1,47 @@
+[tool.poetry]
+name = "brave-date-server"
+version = "0.1.0"
+description = "A fully async based backend for Brave Date built using FastAPI, MongoDB, Pydantic, SQLAlchemy, Redis Pub/Sub, and Deta."
+authors = ["wiseaidev <business@wiseai.dev>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/brave-date/brave-date-server"
+homepage = "https://github.com/brave-date/brave-date-server"
+documentation = ""
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+]
+keywords = ["python", "fastapi", "MongoDB", "SQLAlchemy", "Deta", "tinder clone", "Brave Date"]
+packages = [
+    { include = "app" },
+    { include = "LICENSE" },
+    { include = "README.md" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.9.10"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+fastapi = {extras = ["uvicorn"], version = "^0.87.0"}
+pyjwt = "^2.6.0"
+uvicorn = {extras = ["standard"], version = "^0.20.0"}
+pydantic = {extras = ["email"], version = "^1.10.2"}
+python-multipart = "^0.0.5"
+odmantic = "^0.9.1"
+dnspython = "^2.2.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+server = "app.main:serve"
+
+[tool.black]
+line-length = 79
