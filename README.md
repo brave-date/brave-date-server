@@ -1,5 +1,7 @@
 # Brave Date Server
 
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/brave-date/brave-date-server/main.svg)](https://results.pre-commit.ci/latest/github/brave-date/brave-date-server/main)
+
 A Fully Async-based backend for [Brave Date](https://github.com/brave-date/brave-date).
 
 ## Table of Contents
