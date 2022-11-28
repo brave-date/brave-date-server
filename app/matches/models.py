@@ -7,7 +7,6 @@ from datetime import (
 from odmantic import (
     Field,
     Model,
-    Reference,
 )
 from typing import (
     List,
@@ -15,15 +14,15 @@ from typing import (
 )
 
 
-class AccessToken(Model):
+class Match(Model):
     """
-    The AccessToken model
+    The Match model
 
     Args:
-        Model (odmantic.Model): Base odmantic model.
+        Model (odmantic.Model): Odmantic base model.
     """
 
     user: ObjectId
-    tokens: List[str] = []
+    matches: List[ObjectId] = []
     creation_date: Optional[datetime] = Field(default_factory=datetime.utcnow)
     modified_date: Optional[datetime] = Field(default_factory=datetime.utcnow)

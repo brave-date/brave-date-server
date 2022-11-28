@@ -1,6 +1,5 @@
 """
-A fully async based server for Brave Date built using FastAPI,
-MongoDB, pydantic, Motor, Redis, and Deta.
+utils package.
 """
 
 from app.utils import (

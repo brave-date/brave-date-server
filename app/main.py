@@ -20,6 +20,9 @@ from app.auth import (
 from app.config import (
     settings,
 )
+from app.matches import (
+    router as matches_router,
+)
 from app.users import (
     router as users_router,
 )
@@ -32,6 +35,25 @@ logger = logging.getLogger(__name__)
 
 @lru_cache()
 def get_app() -> FastAPI:
+    app_settings = settings()
+    if app_settings.DEBUG == "info":
+        tinder_app = FastAPI(
+            docs_url="/docs",
+            redoc_url="/redocs",
+            title="Brave Chat Server",
+            description="The server side of Brave Chat.",
+            version="1.0",
+            openapi_url="/api/v1/openapi.json",
+        )
+    else:
+        tinder_app = FastAPI(
+            docs_url=None,
+            redoc_url=None,
+            title=None,
+            description=None,
+            version=None,
+            openapi_url=None,
+        )
     tinder_app = FastAPI(
         docs_url="/docs",
         redoc_url="/redocs",
@@ -47,7 +69,7 @@ def get_app() -> FastAPI:
         "http://localhost:8000",
         "http://localhost:3000",
     ]
-    app_settings = settings()
+
     origins.extend(app_settings.cors_origins)
 
     tinder_app.add_middleware(
@@ -77,8 +99,9 @@ def get_app() -> FastAPI:
     async def root() -> Dict[str, str]:
         return {"message": "Welcome to the Brave Date Server."}
 
-    tinder_app.include_router(auth_router.router, tags=["Auth"])
-    tinder_app.include_router(users_router.router, tags=["User"])
+    tinder_app.include_router(auth_router.router, tags=["auth"])
+    tinder_app.include_router(users_router.router, tags=["users"])
+    tinder_app.include_router(matches_router.router, tags=["matches"])
 
     return tinder_app
 
