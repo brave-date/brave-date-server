@@ -1,8 +1,8 @@
 """
-Auth package.
+Matches package.
 """
 
-from app.auth import (
+from app.matches import (
     crud,
     models,
     router,

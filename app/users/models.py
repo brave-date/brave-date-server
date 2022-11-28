@@ -53,8 +53,9 @@ class DisplayGender(int, Enum):
 class User(Model):
     """
     The User model
+
     Args:
-        Model (Model): Odmontic model.
+        Model (odmantic.Model): Odmantic base model.
     """
 
     first_name: str = Field(index=True)
