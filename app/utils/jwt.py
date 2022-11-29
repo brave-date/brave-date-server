@@ -1,3 +1,5 @@
+"""The utils jwt module."""
+
 from datetime import (
     datetime,
     timedelta,
@@ -14,8 +16,8 @@ import jwt
 from jwt import (
     PyJWTError,
 )
-from motor.motor_asyncio import (
-    AsyncIOMotorDatabase,
+from odmantic.session import (
+    AIOSession,
 )
 from pydantic import (
     ValidationError,
@@ -31,22 +33,18 @@ from app.auth import (
     crud as auth_crud,
     schemas as auth_schemas,
 )
+from app.config import (
+    settings,
+)
 from app.users.schemas import (
     UserObjectSchema,
+)
+from app.utils import (
+    dependencies,
 )
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/api/v1/auth/login", scheme_name="JWT"
-)
-from odmantic.session import (
-    AIOSession,
-)
-
-from app.config import (
-    settings,
-)
-from app.utils import (
-    dependencies,
 )
 
 JWT_SECRET_KEY = settings().JWT_SECRET_KEY
@@ -125,7 +123,9 @@ async def get_current_user(
             algorithms=[JWT_ALGORITHM],
         )
         email = payload.get("sub")
-        access_token = await auth_crud.find_existed_token(email, token, session)  # type: ignore
+        access_token = await auth_crud.find_existed_token(
+            email, token, session
+        )
         if not access_token or not email:
             raise credentials_exception
         token_data = auth_schemas.TokenData(email=email)

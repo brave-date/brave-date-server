@@ -1,3 +1,5 @@
+"""The utils dependencies module."""
+
 from odmantic.session import (
     AIOSession,
 )

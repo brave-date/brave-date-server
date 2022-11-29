@@ -1,6 +1,14 @@
 # Brave Date Server
 
+<div align="center">
+
+[![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/PyCQA/pylint)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Static typing: mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/brave-date/brave-date-server/main.svg)](https://results.pre-commit.ci/latest/github/brave-date/brave-date-server/main)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+</div>
 
 A Fully Async-based backend for [Brave Date](https://github.com/brave-date/brave-date).
 
@@ -14,8 +22,10 @@ A Fully Async-based backend for [Brave Date](https://github.com/brave-date/brave
   - [3. Install dependencies](#3-install-dependencies)
   - [4. Setup a MongoDB Atlas account](#4-setup-a-mongodb-atlas-account)
   - [5. Set your MongoDB Credentials](#5-set-your-mongodb-credentials)
-  - [6. Generate a secret key](#6-generate-a-secret-key)
-  - [7. Run The Project Locally](#7-run-the-project-locally)
+  - [6. Create a Deta Account](#6-create-a-deta-account)
+  - [7. Set your Deta project key](#7-set-your-deta-project-key)
+  - [8. Generate a secret key](#8-generate-a-secret-key)
+  - [9. Run The Project Locally](#9-run-the-project-locally)
 - [Access Swagger Documentation](#access-swagger-documentation)
 - [Access Redocs Documentation](#access-redocs-documentation)
     - [Deta CLI](#deta-cli)
@@ -122,7 +132,20 @@ MONGODB_HOST=cluster_name.example.mongodb.net
 MONGODB_DATABASE=tinder
 ```
 
-### 6. Generate a secret key
+### 6. Create a Deta Account
+
+Create a free account on [Deta](https://www.deta.sh/), and create a new project.
+
+### 7. Set your Deta project key
+
+Set the following environment variable in your `.env` file according to your project key value:
+
+```yaml
+# Deta
+DETA_PROJECT_KEY=
+```
+
+### 8. Generate a secret key
 
 Generate a secret key using OpenSSL and update its env var in the .env file.
 
@@ -138,7 +161,7 @@ JWT_SECRET_KEY=afa1639545d53ecf83c9f8acf4704abe1382f9a9dbf76d2fd229d4795a4748712
 DEBUG=info
 ```
 
-### 7. Run The Project Locally
+### 9. Run The Project Locally
 
 ```sh
 make run

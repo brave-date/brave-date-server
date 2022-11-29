@@ -1,3 +1,5 @@
+"""Auth Schemas module."""
+
 from datetime import (
     datetime,
 )
@@ -17,10 +19,14 @@ from app.users.schemas import (
 
 
 class UserSchema(BaseModel):
+    """
+    A Pydantic class that defines the user schema for registration.
+    """
+
     user: Optional[UserObjectSchema] = Field(
         ...,
         example=UserObjectSchema(
-            _id="asdWQdqw123",
+            id="asdWQdqw123",
             first_name="Your first name.",
             last_name="Your last name.",
             birthday=str(datetime.utcnow().date()),
@@ -46,11 +52,19 @@ class UserSchema(BaseModel):
 
 
 class UserLoginSchema(BaseModel):
+    """
+    A Pydantic class that defines the user schema for logging in.
+    """
+
     email: EmailStr = Field(..., example="Your email address to log in.")
     password: str = Field(..., example="A secure password goes here.")
 
 
 class UserCreate(BaseModel):
+    """
+    A Pydantic class that defines the user schema for sign up.
+    """
+
     first_name: str = Field(..., example="Your first name.")
     last_name: str = Field(..., example="Your last name.")
     birthday: str = Field(..., example=str(datetime.utcnow().date()))
@@ -64,16 +78,28 @@ class UserCreate(BaseModel):
 
 
 class Token(BaseModel):
+    """
+    A Pydantic class that defines the Token schema.
+    """
+
     access_token: str = Field(
         ..., example="Token value(e.g. 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9')"
     )
 
 
 class TokenData(BaseModel):
+    """
+    A Pydantic class that defines a Token schema to return the email address.
+    """
+
     email: Optional[str] = Field(..., example="Your email address.")
 
 
 class ResponseSchema(BaseModel):
+    """
+    A Pydantic class that defines a Response schema object.
+    """
+
     status_code: int = Field(
         ...,
         example=400,

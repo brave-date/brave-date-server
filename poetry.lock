@@ -61,6 +61,14 @@ optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 
 [[package]]
+name = "deta"
+version = "1.1.0"
+description = "Python SDK for Deta Base & Deta Drive."
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "dnspython"
 version = "2.2.1"
 description = "DNS toolkit"
@@ -446,7 +454,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9.10"
-content-hash = "b09d9982117cc5eb3cce19bcbe09f09802554ad60c1ad1e81907d2e57f938d25"
+content-hash = "235b92615f40330474b6ae4b5f2f3013935c9d193301540ad84727b088da1cba"
 
 [metadata.files]
 anyio = [
@@ -487,6 +495,10 @@ click = [
 colorama = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
+]
+deta = [
+    {file = "deta-1.1.0-py3-none-any.whl", hash = "sha256:56c67ba284b955788cb82f5229529131d8e58af7fb91fc2208a3d0d55cda38f2"},
+    {file = "deta-1.1.0.tar.gz", hash = "sha256:c0d59a166139be8100179786ef7f0f5728be9e47deb669266e3045f0cb996828"},
 ]
 dnspython = [
     {file = "dnspython-2.2.1-py3-none-any.whl", hash = "sha256:a851e51367fb93e9e1361732c1d60dab63eff98712e503ea7d92e6eccb109b4f"},

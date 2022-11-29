@@ -32,6 +32,7 @@ pydantic = {extras = ["email"], version = "^1.10.2"}
 python-multipart = "^0.0.5"
 odmantic = "^0.9.1"
 dnspython = "^2.2.1"
+deta = "^1.1.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"

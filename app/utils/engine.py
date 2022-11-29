@@ -1,3 +1,5 @@
+"""The utils engine module."""
+
 from fastapi import (
     FastAPI,
 )
@@ -24,20 +26,13 @@ async def init_engine_app(app: FastAPI) -> None:
     Args:
         app (fastapi.FastAPI): fastAPI application.
     """
-    from app.auth.models import (  # noqa: WPS433
-        AccessToken,
-    )
-    from app.users.models import (  # noqa: WPS433
-        User,
-    )
-
     app_settings = settings()
 
     client = AsyncIOMotorClient(
         app_settings.db_url, maxPoolSize=30, minPoolSize=30
     )
-    db = client.get_default_database()
-    assert db.name == app_settings.MONGODB_DATABASE
+    database = client.get_default_database()
+    assert database.name == app_settings.MONGODB_DATABASE
     engine = AIOEngine(client=client, database="tinder")
     app.state.client = client
     app.state.engine = engine

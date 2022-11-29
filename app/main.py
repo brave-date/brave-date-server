@@ -1,6 +1,7 @@
+"""The main module"""
+
 from fastapi import (
     FastAPI,
-    Request,
 )
 from fastapi.middleware.cors import (
     CORSMiddleware,
@@ -23,6 +24,9 @@ from app.config import (
 from app.matches import (
     router as matches_router,
 )
+from app.messages import (
+    router as messages_router,
+)
 from app.users import (
     router as users_router,
 )
@@ -35,9 +39,15 @@ logger = logging.getLogger(__name__)
 
 @lru_cache()
 def get_app() -> FastAPI:
+    """
+    A method that creates, configures and returns a FastAPI app instance
+
+    Return:
+        FastAPI : a FastAPI app instance
+    """
     app_settings = settings()
     if app_settings.DEBUG == "info":
-        tinder_app = FastAPI(
+        app = FastAPI(
             docs_url="/docs",
             redoc_url="/redocs",
             title="Brave Chat Server",
@@ -46,7 +56,7 @@ def get_app() -> FastAPI:
             openapi_url="/api/v1/openapi.json",
         )
     else:
-        tinder_app = FastAPI(
+        app = FastAPI(
             docs_url=None,
             redoc_url=None,
             title=None,
@@ -54,7 +64,7 @@ def get_app() -> FastAPI:
             version=None,
             openapi_url=None,
         )
-    tinder_app = FastAPI(
+    app = FastAPI(
         docs_url="/docs",
         redoc_url="/redocs",
         title="Brave Date Server",
@@ -72,44 +82,48 @@ def get_app() -> FastAPI:
 
     origins.extend(app_settings.cors_origins)
 
-    tinder_app.add_middleware(
+    app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,
         allow_methods=["*"],
         allow_headers=["*"],
     )
 
-    @tinder_app.on_event("startup")
+    @app.on_event("startup")
     async def startup() -> None:
         logger.info("Connecting to MongoDB...")
-        await engine.init_engine_app(tinder_app)
+        await engine.init_engine_app(app)
         logger.info("Connected to MongoDB!")
 
-    @tinder_app.on_event("shutdown")
+    @app.on_event("shutdown")
     async def shutdown() -> None:
         logger.info("Closing connection with MongoDB...")
         # bug: TypeError: object NoneType can't be used in 'await' expression
         try:
-            await tinder_app.state.client.close()
+            await app.state.client.close()
         except Exception as err:
             logger.error(repr(err))
         logger.info("Closed connection with MongoDB!")
 
-    @tinder_app.get("/api")
+    @app.get("/api")
     async def root() -> Dict[str, str]:
         return {"message": "Welcome to the Brave Date Server."}
 
-    tinder_app.include_router(auth_router.router, tags=["auth"])
-    tinder_app.include_router(users_router.router, tags=["users"])
-    tinder_app.include_router(matches_router.router, tags=["matches"])
+    app.include_router(auth_router.router, tags=["auth"])
+    app.include_router(users_router.router, tags=["users"])
+    app.include_router(matches_router.router, tags=["matches"])
+    app.include_router(messages_router.router, tags=["messages"])
 
-    return tinder_app
+    return app
 
 
 tinder_app = get_app()
 
 
 def serve() -> None:
+    """
+    A method that run a uvicorn command.
+    """
     try:
 
         uvicorn.run(
@@ -120,8 +134,8 @@ def serve() -> None:
             reload=True,
             log_level="info",
         )
-    except Exception as e:
-        print(e)
+    except Exception as err:
+        logger.error(repr(err))
 
 
 if __name__ == "__main__":

@@ -1,15 +1,11 @@
+"""The users router module"""
+
 from fastapi import (
     APIRouter,
     Depends,
-    File,
-    UploadFile,
-    responses,
 )
 from fastapi.encoders import (
     jsonable_encoder,
-)
-from motor.motor_asyncio import (
-    AsyncIOMotorDatabase,
 )
 from odmantic.session import (
     AIOSession,
@@ -34,7 +30,7 @@ router = APIRouter(prefix="/api/v1")
 
 @router.get("/user/profile", response_model=users_schemas.UserSchema)
 async def get_user_profile(
-    currentUser: users_schemas.UserObjectSchema = Depends(
+    current_user: users_schemas.UserObjectSchema = Depends(
         jwt.get_current_active_user
     ),
 ) -> Dict[str, Any]:
@@ -44,7 +40,7 @@ async def get_user_profile(
     results = {
         "token": None,
         "user": users_schemas.UserObjectSchema(
-            **jsonable_encoder(currentUser)
+            **jsonable_encoder(current_user)
         ),
         "status_code": 200,
         "message": "Welcome to Brave Date.",
@@ -55,8 +51,11 @@ async def get_user_profile(
 @router.get("/user/logout")
 async def logout(
     token: str = Depends(jwt.get_token_user),
-    currentUser: users_models.User = Depends(jwt.get_current_active_user),
+    current_user: users_models.User = Depends(jwt.get_current_active_user),
     session: AIOSession = Depends(dependencies.get_db_transactional_session),
 ) -> Dict[str, Any]:
-    await user_crud.remove_token(currentUser.id, token, session)
+    """
+    Log out a user from the app by removing the access token from the list.
+    """
+    await user_crud.remove_token(current_user.id, token, session)
     return {"status": 200, "message": "Good Bye!"}

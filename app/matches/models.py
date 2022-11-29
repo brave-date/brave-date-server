@@ -1,3 +1,5 @@
+"""Matches models module."""
+
 from bson import (
     ObjectId,
 )

@@ -1,9 +1,8 @@
+"""Matches router module."""
+
 from fastapi import (
     APIRouter,
     Depends,
-)
-from fastapi.security import (
-    OAuth2PasswordRequestForm,
 )
 from odmantic.session import (
     AIOSession,
@@ -23,6 +22,9 @@ from app.matches import (
 from app.matches.schemas import (
     AddMatch,
     GetAllMatchesResults,
+)
+from app.users import (
+    schemas as users_schemas,
 )
 from app.utils import (
     dependencies,
@@ -52,14 +54,16 @@ router = APIRouter(prefix="/api/v1")
 )
 async def add_match(
     match: AddMatch,
-    currentUser=Depends(jwt.get_current_active_user),
+    current_user: users_schemas.UserObjectSchema = Depends(
+        jwt.get_current_active_user
+    ),
     session: AIOSession = Depends(dependencies.get_db_transactional_session),
-):
+) -> Dict[str, Any]:
     """
     Add new user to an authenticated user matches list.
     """
     results = await matches_crud.add_new_match(
-        match.match, currentUser.id, session
+        match.match, current_user.id, session
     )
     return results
 
@@ -81,11 +85,13 @@ async def add_match(
     },
 )
 async def get_matches_for_user(
-    currentUser=Depends(jwt.get_current_active_user),
+    current_user: users_schemas.UserObjectSchema = Depends(
+        jwt.get_current_active_user
+    ),
     session: AIOSession = Depends(dependencies.get_db_transactional_session),
-):
+) -> Dict[str, Any]:
     """
     Get all matches for an authenticated user.
     """
-    results = await matches_crud.get_user_matches(currentUser.id, session)
+    results = await matches_crud.get_user_matches(current_user.id, session)
     return results

@@ -1,3 +1,5 @@
+"""The users schemas module"""
+
 from datetime import (
     datetime,
 )
@@ -13,7 +15,11 @@ from typing import (
 
 
 class UserObjectSchema(BaseModel):
-    _id: str = Field(..., example="asdWQdqw123")
+    """
+    A Pydantic class that defines the user schema for fetching user info.
+    """
+
+    id: str = Field(..., example="asdWQdqw123")
     first_name: str = Field(..., example="Your first name.")
     last_name: str = Field(..., example="Your last name.")
     birthday: str = Field(..., example=str(datetime.utcnow().date()))
@@ -29,15 +35,23 @@ class UserObjectSchema(BaseModel):
 
 
 class UserLoginSchema(BaseModel):
+    """
+    A Pydantic class that defines the user schema for the login endpoint.
+    """
+
     email: EmailStr = Field(..., example="testing@gmail.com")
     password: str = Field(..., example="A secure password goes here.")
 
 
 class UserSchema(BaseModel):
+    """
+    A Pydantic class that defines the user schema for response.
+    """
+
     user: Optional[UserObjectSchema] = Field(
         ...,
         example=UserObjectSchema(
-            _id="asdWQdqw123",
+            id="asdWQdqw123",
             first_name="Your first name.",
             last_name="Your last name.",
             birthday=str(datetime.utcnow().date()),

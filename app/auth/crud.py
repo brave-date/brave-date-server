@@ -1,7 +1,5 @@
 """Auth Crud module."""
 
-# conflict between isort and pylint
-# pylint: disable=C0411,E0401
 from datetime import (
     datetime,
     timedelta,
@@ -49,7 +47,7 @@ async def create_user(
         session (odmantic.session.AIOSession) : odmantic session object.
 
     Returns:
-        Result: A User model instance
+        users_models.User: A User model instance
     """
     user = users_models.User(**user.dict())
     await session.save(user)

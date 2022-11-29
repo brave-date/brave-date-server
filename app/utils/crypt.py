@@ -1,3 +1,5 @@
+"""The utils crypt module."""
+
 from passlib.context import (
     CryptContext,
 )
