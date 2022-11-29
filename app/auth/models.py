@@ -1,3 +1,5 @@
+"""Auth model module."""
+
 from bson import (
     ObjectId,
 )
@@ -7,7 +9,6 @@ from datetime import (
 from odmantic import (
     Field,
     Model,
-    Reference,
 )
 from typing import (
     List,

@@ -1,4 +1,5 @@
-# Entrypoint for Deta Micros
+"""Entrypoint for Deta Micros"""
+
 from sys import path
 
 path.append(".")

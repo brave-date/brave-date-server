@@ -36,3 +36,34 @@ repos:
     rev: 'v0.991'
     hooks:
       - id: mypy
+        args:
+          - "--strict"
+          - "--ignore-missing-imports"
+          - "--warn-unused-configs"
+          - "--warn-redundant-casts"
+          - "--warn-unused-ignores"
+          - "--no-implicit-optional"
+          - "--strict-equality"
+          - "--strict-concatenate"
+          - "--check-untyped-defs"
+          - "--allow-untyped-decorators"
+          - "--allow-subclassing-any"
+          - "--no-warn-return-any"
+
+  - repo: https://github.com/PyCQA/autoflake
+    rev: 'v2.0.0'
+    hooks:
+      - id: autoflake
+        args:
+          - "--in-place"
+          - "--recursive"
+          - "--expand-star-imports"
+          - "--remove-duplicate-keys"
+          - "--remove-all-unused-imports"
+          - "--remove-unused-variables"
+          - "--ignore-init-module-imports"
+
+  - repo: https://github.com/PyCQA/pylint
+    rev: 'v3.0.0-a5'
+    hooks:
+      - id: pylint

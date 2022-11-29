@@ -1,3 +1,5 @@
+"""The users crud module"""
+
 from bson import (
     ObjectId,
 )
@@ -10,9 +12,6 @@ from odmantic.session import (
 
 from app.auth import (
     models as auth_models,
-)
-from app.utils import (
-    crypt,
 )
 
 

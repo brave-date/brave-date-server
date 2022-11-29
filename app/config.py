@@ -1,14 +1,9 @@
 """Configurations module."""
 
-# conflict between isort and pylint
-# pylint: disable=C0411
 from functools import (
     lru_cache,
 )
 import os
-from pathlib import (
-    Path,
-)
 from pydantic import (
     BaseSettings,
 )
@@ -32,6 +27,7 @@ class Settings(BaseSettings):
         JWT_SECRET_KEY (str) : A secure app jwt secret key.
         DEBUG (str) : A variable used to separate testing env from production env.
         CORS_ORIGINS (str) : A string that contains comma separated urls for cors origins.
+        DETA_PROJECT_KEY (str) : A Deta project key.
 
     Example:
         >>> MONGODB_HOST=svc-123456789.svc.MONGODB.com
@@ -41,6 +37,7 @@ class Settings(BaseSettings):
         >>> JWT_SECRET_KEY=123SDA23sa
         >>> DEBUG="" # "" means production, "test" means testing, "info" means development.
         >>> CORS_ORIGINS="https://app-name.herokuapp.com,http://app-name.pages.dev"
+        >>> DETA_PROJECT_KEY=12312dSDJHJSBA
     """
 
     MONGODB_HOST: str = os.getenv("MONGODB_HOST")  # type: ignore
@@ -50,6 +47,7 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")  # type: ignore
     DEBUG: str = os.getenv("DEBUG")  # type: ignore
     CORS_ORIGINS: str = os.getenv("CORS_ORIGINS")  # type: ignore
+    DETA_PROJECT_KEY: str = os.getenv("DETA_PROJECT_KEY")  # type: ignore
 
     class Config:  # pylint: disable=R0903
         """
@@ -123,7 +121,13 @@ class Settings(BaseSettings):
 
 
 @lru_cache()
-def settings() -> "Settings":
+def settings() -> Settings:
+    """
+    Return a cached Settings instance.
+
+    Returns:
+        Settings: The app settings.
+    """
     return Settings()
 
 

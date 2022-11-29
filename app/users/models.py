@@ -1,7 +1,12 @@
+"""The users models module"""
+
 from datetime import (
     datetime,
 )
-from enum import Enum
+from enum import (
+    Enum,
+    IntEnum,
+)
 from odmantic import (
     Field,
     Index,
@@ -17,37 +22,79 @@ from typing import (
 
 
 class ChatStatus(str, Enum):
-    online = "online"
-    offline = "offline"
-    busy = "busy"
-    dont_disturb = "don't disturb"
+    """
+    The ChatStatus enumeration
+
+    Args:
+        Enum (enum.Enum): Base enum class.
+    """
+
+    ONLINE = "online"
+    OFFLINE = "offline"
+    BUSY = "busy"
+    DONT_DISTURB = "don't disturb"
 
 
-class UserStatus(int, Enum):
-    active = 1
-    disabled = 0
+class UserStatus(IntEnum):
+    """
+    The UserStatus enumeration
+
+    Args:
+        Enum (enum.Enum): Base enum class.
+    """
+
+    ACTIVE = 1
+    DISABLED = 0
 
 
 class UserRole(str, Enum):
-    regular = "regular"
-    admin = "admin"
+    """
+    The UserRole enumeration
+
+    Args:
+        Enum (enum.Enum): Base enum class.
+    """
+
+    REGULAR = "regular"
+    ADMIN = "admin"
 
 
 class UserGender(str, Enum):
-    man = "man"
-    woman = "woman"
-    other = "other"
+    """
+    The UserGender enumeration
+
+    Args:
+        Enum (enum.Enum): Base enum class.
+    """
+
+    MAN = "man"
+    WOMAN = "woman"
+    OTHER = "other"
 
 
 class GenderInterests(str, Enum):
-    man = "man"
-    woman = "woman"
-    everyone = "everyone"
+    """
+    The GenderInterests enumeration
+
+    Args:
+        Enum (enum.Enum): Base enum class.
+    """
+
+    MAN = "man"
+    WOMAN = "woman"
+    EVERYONE = "everyone"
 
 
-class DisplayGender(int, Enum):
-    yes = 1
-    no = 0
+class DisplayGender(IntEnum):
+    """
+    The DisplayGender enumeration
+
+    Args:
+        Enum (enum.Enum): Base enum class.
+    """
+
+    YES = 1
+    NO = 0
 
 
 class User(Model):
@@ -69,9 +116,9 @@ class User(Model):
     password: str = Field(index=True)
     profile_picture: str = Field(...)
     phone_number: Optional[str]
-    chat_status: Optional[ChatStatus] = Field(default=ChatStatus.online.value)
-    user_status: Optional[UserStatus] = Field(default=UserStatus.active.value)
-    user_role: Optional[UserRole] = Field(default=UserRole.regular.value)
+    chat_status: Optional[ChatStatus] = Field(default=ChatStatus.ONLINE.value)
+    user_status: Optional[UserStatus] = Field(default=UserStatus.ACTIVE.value)
+    user_role: Optional[UserRole] = Field(default=UserRole.REGULAR.value)
     creation_date: Optional[datetime] = Field(default_factory=datetime.utcnow)
     modified_date: Optional[datetime] = Field(default_factory=datetime.utcnow)
 

@@ -1,7 +1,5 @@
 """Matches Crud module."""
 
-# conflict between isort and pylint
-# pylint: disable=C0411,E0401
 from bson import (
     ObjectId,
 )
@@ -15,19 +13,15 @@ from pydantic import (
     EmailStr,
 )
 from typing import (
-    Optional,
-    Union,
+    Any,
+    Dict,
 )
 
 from app.auth import (
     crud as auth_crud,
 )
-from app.auth.schemas import (
-    ResponseSchema,
-)
 from app.matches import (
     models as matches_models,
-    schemas as matches_schemas,
 )
 from app.users import (
     models as users_models,
@@ -36,7 +30,7 @@ from app.users import (
 
 async def add_new_match(
     match: EmailStr, user_id: ObjectId, session: AIOSession
-) -> ResponseSchema:
+) -> Dict[str, Any]:
     """
     A method to insert a user id into a user matches list.
 
@@ -46,7 +40,7 @@ async def add_new_match(
         session (odmantic.session.AIOSession) : odmantic session object.
 
     Returns:
-        Result: A Response dict.
+        Dict[str, Any]: A Response dict.
     """
     match_user = await auth_crud.find_existed_user(match, session)
     if not match_user:
@@ -55,7 +49,7 @@ async def add_new_match(
             "message": "You can't add a non existing user to"
             " your matches list!",
         }
-    elif match_user.id == user_id:
+    if match_user.id == user_id:
         return {
             "status_code": 400,
             "message": "You can't add yourself to your matches list!",
@@ -101,7 +95,7 @@ async def add_new_match(
 
 async def get_user_matches(
     user_id: ObjectId, session: AIOSession
-) -> Union[ResponseSchema, matches_schemas.GetAllMatchesResults]:
+) -> Dict[str, Any]:
     """
     A method to fetch all user matches info.
 
@@ -110,7 +104,7 @@ async def get_user_matches(
         session (odmantic.session.AIOSession) : odmantic session object.
 
     Returns:
-        Result: A User model instance
+        Dict[str, Any]: A User model instance
     """
     match = await session.find_one(
         matches_models.Match, matches_models.Match.user == user_id

@@ -1,3 +1,5 @@
+"""Auth router module."""
+
 from fastapi import (
     APIRouter,
     Depends,
@@ -58,6 +60,9 @@ async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     session: AIOSession = Depends(dependencies.get_db_transactional_session),
 ) -> Dict[str, Any]:
+    """
+    Authenticate a user.
+    """
     access_token = await login_user(form_data, session)
     return access_token
 
@@ -83,5 +88,8 @@ async def register(
     user: UserCreate,
     session: AIOSession = Depends(dependencies.get_db_transactional_session),
 ) -> Dict[str, Any]:
+    """
+    register a new user.
+    """
     results = await register_user(user, session)
     return results
