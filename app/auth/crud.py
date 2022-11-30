@@ -1,5 +1,8 @@
 """Auth Crud module."""
 
+from bson import (
+    ObjectId,
+)
 from datetime import (
     datetime,
     timedelta,
@@ -64,9 +67,6 @@ async def find_existed_user(
         email (EmailStr) : A given user email.
         session (odmantic.session.AIOSession) : Odmantic session object.
 
-    Raises:
-        HTTPException: If the token is invalid.
-
     Returns:
         users_models.User: The current user object.
     """
@@ -74,6 +74,27 @@ async def find_existed_user(
         users_models.User, users_models.User.email == email
     )
     return user
+
+
+async def find_existed_user_id(
+    user_id: str, session: AIOSession
+) -> Optional[users_models.User]:
+    """
+    A method to fetch a user info given an id.
+
+    Args:
+        user_id (str) : A given user id.
+        session (odmantic.session.AIOSession) : Odmantic session object.
+
+    Returns:
+        users_models.User: The current user object.
+    """
+    user = await session.find_one(
+        users_models.User, users_models.User.id == ObjectId(user_id)
+    )
+    if user:
+        return users_schemas.UserObjectSchema(**jsonable_encoder(user))
+    return None
 
 
 async def login_user(
@@ -165,7 +186,7 @@ async def register_user(
         "user": users_schemas.UserObjectSchema(**jsonable_encoder(user)),
         "token": access_token,
         "status_code": 201,
-        "message": "Welcome! Proceed to the login page...",
+        "message": "Welcome. Start matchin'!",
     }
     return results
 
@@ -185,7 +206,10 @@ async def find_existed_token(
     token_obj = await session.find_one(
         auth_models.AccessToken, auth_models.AccessToken.user == user.id
     )
-    tokens = token_obj.tokens
-    if token in tokens:
-        return token
+    try:
+        tokens = token_obj.tokens
+        if token in tokens:
+            return token
+    except Exception:
+        ...
     return None

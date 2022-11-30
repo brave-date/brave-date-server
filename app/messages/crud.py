@@ -1,5 +1,8 @@
 """The messages crud module"""
 
+from bson import (
+    ObjectId,
+)
 from datetime import (
     datetime,
 )
@@ -15,6 +18,7 @@ from typing import (
     Any,
     Dict,
     Optional,
+    Union,
 )
 import uuid
 
@@ -27,6 +31,9 @@ from app.config import (
 from app.messages import (
     models as messages_models,
     schemas as messages_schemas,
+)
+from app.users import (
+    models as users_models,
 )
 
 logger = logging.getLogger(__name__)
@@ -41,7 +48,7 @@ async def send_new_message(
     request: messages_schemas.MessageCreate,
     file: Optional[str],
     session: AIOSession,
-) -> Dict[str, Any]:
+) -> Union[Dict[str, Any], str]:
     """
     A method to create a message.
 
@@ -52,7 +59,7 @@ async def send_new_message(
         session (odmantic.session.AIOSession) : odmantic session object.
 
     Returns:
-        Dict[str, Any]: A Response schema dict.
+        Dict[str, Any] | : A Response schema dict or uploaded file name.
     """
     receiver = await auth_crud.find_existed_user(
         email=request.receiver, session=session
@@ -99,8 +106,8 @@ async def send_new_message(
     # append the new message into the conversation list; check if conversation exists, first.
     conversation = await session.find_one(
         messages_models.Conversation,
-        messages_models.Conversation.sender == sender_id,
-        messages_models.Conversation.receiver == receiver.id,
+        messages_models.Conversation.sender == ObjectId(sender_id),
+        messages_models.Conversation.receiver == ObjectId(receiver.id),
     )
     if not conversation:
         conversation = messages_models.Conversation(
@@ -115,13 +122,15 @@ async def send_new_message(
         )
         conversation.update(
             {
-                "sender": sender_id,
-                "receiver": receiver.id,
+                "sender": ObjectId(sender_id),
+                "receiver": ObjectId(receiver.id),
                 "messages": messages,
                 "modified_date": datetime.utcnow(),
             }
         )
     await session.save(conversation)
+    if request.message_type == "media":
+        return file_name
     return {
         "status_code": 201,
         "message": "A new message has been delivered successfully!",
@@ -190,4 +199,54 @@ async def get_sender_receiver_messages(
         messages_sent, key=lambda message_dict: message_dict["creation_date"]
     )
     results = {"status_code": 200, "result": messages}
+    return results
+
+
+async def get_all_users_messages(
+    sender_id: str, session: AIOSession
+) -> Dict[str, Any]:
+    """
+    A method to get all users sent messages to the authenticated user.
+
+    Args:
+        sender_id (str) : A user id for a given message sender.
+        session (odmantic.session.AIOSession) : odmantic session object.
+
+    Returns:
+        Dict[str, Any]: A Response schema dict.
+    """
+    conversations_sent = await session.find(
+        messages_models.Conversation,
+        messages_models.Conversation.sender == sender_id,
+    )
+    conversations_received = await session.find(
+        messages_models.Conversation,
+        messages_models.Conversation.receiver == sender_id,
+    )
+    users_sent = []
+    users_received = []
+    if conversations_sent:
+        conversations_sent_ids = [
+            str(conversation.receiver) for conversation in conversations_sent
+        ]
+        for conversation in conversations_sent:
+            receiver = await session.find_one(
+                users_models.User,
+                users_models.User.id == conversation.receiver,
+            )
+            user = receiver.dict()
+            user["id"] = str(user["id"])
+            users_sent.append(user)
+    if conversations_received:
+        for conversation in conversations_received:
+            sender = await session.find_one(
+                users_models.User, users_models.User.id == conversation.sender
+            )
+            user = sender.dict()
+            user["id"] = str(user["id"])
+            if user["id"] not in conversations_sent_ids:
+                users_received.append(user)
+    users_sent.extend(users_received)
+    users = sorted(users_sent, key=lambda user: user["first_name"])
+    results = {"status_code": 200, "result": users}
     return results
