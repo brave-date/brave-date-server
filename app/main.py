@@ -33,6 +33,9 @@ from app.users import (
 from app.utils import (
     engine,
 )
+from app.websockets import (
+    router as websockets_router,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -113,6 +116,7 @@ def get_app() -> FastAPI:
     app.include_router(users_router.router, tags=["users"])
     app.include_router(matches_router.router, tags=["matches"])
     app.include_router(messages_router.router, tags=["messages"])
+    app.include_router(websockets_router.router, tags=["websockets"])
 
     return app
 
@@ -129,7 +133,6 @@ def serve() -> None:
         uvicorn.run(
             "app.main:tinder_app",
             host="0.0.0.0",
-            workers=4,
             port=8000,
             reload=True,
             log_level="info",

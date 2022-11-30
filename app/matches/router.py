@@ -13,11 +13,9 @@ from typing import (
     Union,
 )
 
-from app.auth.schemas import (
-    ResponseSchema,
-)
 from app.matches import (
     crud as matches_crud,
+    schemas as matches_schemas,
 )
 from app.matches.schemas import (
     AddMatch,
@@ -36,17 +34,17 @@ router = APIRouter(prefix="/api/v1")
 
 @router.post(
     "/matches",
-    response_model=ResponseSchema,
+    response_model=matches_schemas.ResponseSchema,
     status_code=201,
     name="matches:add-match",
     responses={
         201: {
-            "model": ResponseSchema,
+            "model": matches_schemas.ResponseSchema,
             "description": "Return a message that indicates a new user"
             "has been added to the matches list.",
         },
         400: {
-            "model": ResponseSchema,
+            "model": matches_schemas.ResponseSchema,
             "description": "Return this response in case of non existing user"
             " or an already existed one in the match list.",
         },
@@ -70,7 +68,7 @@ async def add_match(
 
 @router.get(
     "/matches",
-    response_model=Union[GetAllMatchesResults, ResponseSchema],
+    response_model=Union[GetAllMatchesResults, matches_schemas.ResponseSchema],
     status_code=200,
     name="matches:get-all-user-matches",
     responses={
@@ -79,7 +77,7 @@ async def add_match(
             "description": "A list of matches for each user.",
         },
         400: {
-            "model": ResponseSchema,
+            "model": matches_schemas.ResponseSchema,
             "description": "User not found.",
         },
     },

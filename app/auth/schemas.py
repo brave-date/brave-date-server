@@ -9,7 +9,6 @@ from pydantic import (
     Field,
 )
 from typing import (
-    List,
     Optional,
 )
 
@@ -33,7 +32,7 @@ class UserSchema(BaseModel):
             gender="man",
             interests="woman",
             display_gender=1,
-            passion=["swimming", "cardio"],
+            passion="swimming,cardio",
             email="user@test.com",
             profile_picture="A relative URL to Deta Drive.",
         ),
@@ -71,7 +70,7 @@ class UserCreate(BaseModel):
     gender: str = Field(..., example="man")
     interests: str = Field(..., example="woman")
     display_gender: int = Field(..., example=1)
-    passion: List[str] = Field(..., example=["swimming", "cardio"])
+    passion: str = Field(..., example="swimming,cardio")
     email: EmailStr = Field(..., example="user@test.com")
     password: str = Field(..., example="A secure password goes here.")
     profile_picture: str = Field(..., example="A relative URL to Deta Drive.")

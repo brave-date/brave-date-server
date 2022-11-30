@@ -1,8 +1,10 @@
 """The messages router module"""
 
+from deta import Deta
 from fastapi import (
     APIRouter,
     Depends,
+    responses,
 )
 from odmantic.session import (
     AIOSession,
@@ -13,10 +15,14 @@ from pydantic import (
 from typing import (
     Any,
     Dict,
+    Union,
 )
 
 from app.auth import (
     schemas as auth_schemas,
+)
+from app.config import (
+    settings,
 )
 from app.messages import (
     crud as messages_crud,
@@ -29,6 +35,10 @@ from app.utils import (
     dependencies,
     jwt,
 )
+
+deta = Deta(settings().DETA_PROJECT_KEY)
+
+sent_images = deta.Drive("sent-images")
 
 router = APIRouter(prefix="/api/v1")
 
@@ -55,7 +65,7 @@ async def send_message(
         jwt.get_current_active_user
     ),
     session: AIOSession = Depends(dependencies.get_db_transactional_session),
-) -> Dict[str, Any]:
+) -> Union[Dict[str, Any], str]:
     """
     Deliver a new message given an authenticated user.
     """
@@ -89,5 +99,56 @@ async def get_conversation(
     """
     results = await messages_crud.get_sender_receiver_messages(
         current_user.id, receiver, session
+    )
+    return results
+
+
+@router.get("/chat/images/user/{user_id}/{uuid_val}")
+async def get_sent_user_chat_images(
+    user_id: str, uuid_val: str
+) -> responses.StreamingResponse:
+    """
+    The get_sent_user_chat_images endpoint.
+
+    Args:
+        user_id (id) : The id of the sender of the image.
+        uuid_val (str): A unique uuid generated upon upload.
+
+    Returns:
+        responses: return a response object for a given url(image).
+    """
+    try:
+        img = sent_images.get(f"/chat/images/user/{user_id}/{uuid_val}")
+        return responses.StreamingResponse(
+            img.iter_chunks(), media_type="image/png"
+        )
+    except Exception:  # pylint: disable=W0703
+        return {"status_code": 400, "message": "Something went wrong!"}
+
+
+@router.get(
+    "/message/users",
+    response_model=users_schemas.UsersSchema,
+    status_code=200,
+    name="messages:get-all-messages",
+    responses={
+        200: {
+            "model": users_schemas.UsersSchema,
+            "description": "Return a list of users sent/received messages"
+            " to/from the authenticated user.",
+        },
+    },
+)
+async def get_conversation_users(
+    current_user: users_schemas.UserObjectSchema = Depends(
+        jwt.get_current_active_user
+    ),
+    session: AIOSession = Depends(dependencies.get_db_transactional_session),
+) -> Dict[str, Any]:
+    """
+    Return all users sent messages to this authenticated user.
+    """
+    results = await messages_crud.get_all_users_messages(
+        current_user.id, session
     )
     return results

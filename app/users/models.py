@@ -3,10 +3,7 @@
 from datetime import (
     datetime,
 )
-from enum import (
-    Enum,
-    IntEnum,
-)
+from enum import Enum
 from odmantic import (
     Field,
     Index,
@@ -16,7 +13,6 @@ from pydantic import (
     EmailStr,
 )
 from typing import (
-    List,
     Optional,
 )
 
@@ -35,7 +31,7 @@ class ChatStatus(str, Enum):
     DONT_DISTURB = "don't disturb"
 
 
-class UserStatus(IntEnum):
+class UserStatus(int, Enum):
     """
     The UserStatus enumeration
 
@@ -85,7 +81,7 @@ class GenderInterests(str, Enum):
     EVERYONE = "everyone"
 
 
-class DisplayGender(IntEnum):
+class DisplayGender(int, Enum):
     """
     The DisplayGender enumeration
 
@@ -111,7 +107,7 @@ class User(Model):
     gender: UserGender = Field(...)
     interests: GenderInterests = Field(...)
     display_gender: DisplayGender = Field(...)
-    passion: List[str] = []
+    passion: str = Field(...)
     email: EmailStr = Field(index=True)
     password: str = Field(index=True)
     profile_picture: str = Field(...)

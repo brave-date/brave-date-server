@@ -6,6 +6,9 @@ from bson import (
 from datetime import (
     datetime,
 )
+from fastapi.encoders import (
+    jsonable_encoder,
+)
 from odmantic.session import (
     AIOSession,
 )
@@ -114,6 +117,5 @@ async def get_user_matches(
         users = await session.find(
             users_models.User, users_models.User.id.in_(matches)
         )
-        results = {"status_code": 200, "result": users}
-        return results
+        return {"status_code": 200, "result": jsonable_encoder(users)}
     return {"status_code": 400, "message": "You don't have matches!"}

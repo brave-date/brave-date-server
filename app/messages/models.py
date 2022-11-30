@@ -6,10 +6,7 @@ from bson import (
 from datetime import (
     datetime,
 )
-from enum import (
-    Enum,
-    IntEnum,
-)
+from enum import Enum
 from odmantic import (
     Field,
     Model,
@@ -20,7 +17,7 @@ from typing import (
 )
 
 
-class MessageStatus(IntEnum):
+class MessageStatus(int, Enum):
     """
     The MessageStatus enumeration
 
