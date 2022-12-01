@@ -9,6 +9,7 @@ from pydantic import (
     Field,
 )
 from typing import (
+    Dict,
     List,
     Optional,
 )
@@ -64,7 +65,7 @@ class UserSchema(BaseModel):
             profile_picture="A relative URL to Deta Drive.",
         ),
     )
-    token: Optional[dict[str, str]] = Field(
+    token: Optional[Dict[str, str]] = Field(
         ..., example="Token value(e.g. 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9')"
     )
     status_code: int = Field(
