@@ -69,7 +69,9 @@ async def get_users(user_id: ObjectId, session: AIOSession) -> Dict[str, Any]:
     match = await session.find_one(
         matches_models.Match, matches_models.Match.user == user_id
     )
-    matches_ids = match.matches
+    matches_ids = []
+    if match:
+        matches_ids = match.matches
     result = []
     # return users not in matches
     for user in users:
