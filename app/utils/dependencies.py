@@ -10,10 +10,6 @@ from typing import (
     AsyncGenerator,
 )
 
-from app.main import (
-    tinder_app,
-)
-
 
 async def get_db_transactional_session(
     request: Request,
@@ -43,6 +39,11 @@ async def get_db_autocommit_session() -> AsyncGenerator[AIOSession, None]:
     Yields :
         odmantic.session.AIOSession: a database session.
     """
+
+    from app.main import (  # pylint: disable=C0415
+        tinder_app,
+    )
+
     try:
         session: AIOSession = tinder_app.state.engine.session()
         await session.start()
