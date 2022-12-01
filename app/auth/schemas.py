@@ -12,8 +12,8 @@ from typing import (
     Optional,
 )
 
-from app.users.schemas import (
-    UserObjectSchema,
+from app.users import (
+    schemas as users_schemas,
 )
 
 
@@ -22,9 +22,9 @@ class UserSchema(BaseModel):
     A Pydantic class that defines the user schema for registration.
     """
 
-    user: Optional[UserObjectSchema] = Field(
+    user: Optional[users_schemas.UserObjectSchema] = Field(
         ...,
-        example=UserObjectSchema(
+        example=users_schemas.UserObjectSchema(
             id="asdWQdqw123",
             first_name="Your first name.",
             last_name="Your last name.",
