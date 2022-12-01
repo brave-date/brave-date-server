@@ -17,21 +17,9 @@ A Fully Async-based backend for [Brave Date](https://github.com/brave-date/brave
 - [Development Requirements](#development-requirements)
 - [Project Structure](#project-structure)
 - [Installation with Make](#installation-with-make)
-  - [1. Create a virtualenv](#1-create-a-virtualenv)
-  - [2. Activate the virtualenv](#2-activate-the-virtualenv)
-  - [3. Install dependencies](#3-install-dependencies)
-  - [4. Setup a MongoDB Atlas account](#4-setup-a-mongodb-atlas-account)
-  - [5. Set your MongoDB Credentials](#5-set-your-mongodb-credentials)
-  - [6. Create a Deta Account](#6-create-a-deta-account)
-  - [7. Set your Deta project key](#7-set-your-deta-project-key)
-  - [8. Generate a secret key](#8-generate-a-secret-key)
-  - [9. Run The Project Locally](#9-run-the-project-locally)
 - [Access Swagger Documentation](#access-swagger-documentation)
 - [Access Redocs Documentation](#access-redocs-documentation)
-    - [Deta CLI](#deta-cli)
-  - [Heroku](#heroku)
-    - [Heroku CLI (Experimental: Deploy the entire stack)](#heroku-cli-experimental-deploy-the-entire-stack)
-  - [Vercel](#vercel)
+- [Deployments](#deployments)
 - [Core Dependencies](#core-dependencies)
 - [License](#license)
 
@@ -48,25 +36,39 @@ A Fully Async-based backend for [Brave Date](https://github.com/brave-date/brave
 
 ```sh
 .
-├── auth     # Package contains different config files for the `auth` app.
-│   ├── crud.py     # Module contains different CRUD operations performed on the database.
+├── auth          # Package contains different config files for the `auth` app.
+│   ├── crud.py       # Module contains different CRUD operations performed on the database.
 │   ├── models.py     # Module contains different data models for ODM to interact with database.
 │   ├── router.py     # Module contains different routes for this api.
-│   └── schemas.py     # Module contains different schemas for this api for validation purposes.
-├── users     # Package contains different config files for the `users` app.
-│   ├── crud.py     # Module contains different CRUD operations performed on the database.
-│   ├── models.py     # Module contains different models for ODMs to inteact with database..
+│   └── schemas.py    # Module contains different schemas for this api for validation purposes.
+├── matches       # Package contains different config files for the `matches` app.
+│   ├── crud.py       # Module contains different CRUD operations performed on the database.
+│   ├── models.py     # Module contains different models for ODMs to inteact with database.
 │   ├── router.py     # Module contains different routes for this api.
-│   └── schemas.py     # Module contains different schemas for this api for validation purposes.
-├── utils     # Package contains different common utility modules for the whole project.
+│   └── schemas.py    # Module contains different schemas for this api for validation purposes.
+├── messages      # Package contains different config files for the `messages` app.
+│   ├── crud.py       # Module contains different CRUD operations performed on the database.
+│   ├── models.py     # Module contains different models for ODMs to inteact with database.
+│   ├── router.py     # Module contains different routes for this api.
+│   └── schemas.py    # Module contains different schemas for this api for validation purposes.
+├── users         # Package contains different config files for the `users` app.
+│   ├── crud.py       # Module contains different CRUD operations performed on the database.
+│   ├── models.py     # Module contains different models for ODMs to inteact with database.
+│   ├── router.py     # Module contains different routes for this api.
+│   └── schemas.py    # Module contains different schemas for this api for validation purposes.
+├── websockets    # Package contains different config files for the `websockets` app.
+│   ├── manager.py    # Module contains the manager class definitions.
+│   ├── router.py     # Module contains different routes for this api.
+├── utils         # Package contains different common utility modules for the whole project.
 │   ├── crypt.py
 │   ├── dependencies.py     # A utility script that yield a session for each request to make the crud call work.
-│   ├── engine.py     # A utility script that initializes an ODMantic engine and client and set them as app state variables.
-│   ├── jwt.py     # A utility script for JWT.
-│   ├── mixins.py     # A utility script that contains common mixins for different models.
+│   ├── engine.py           # A utility script that initializes an ODMantic engine and client and set them as app state variables.
+│   ├── jwt.py              # A utility script for JWT.
+│   ├── mixins.py           # A utility script that contains common mixins for different models.
 ├── config.py     # Module contains the main configuration settings for project.
 ├── __init__.py
-├── main.py     # Startup script. Starts uvicorn.
+├── main.py       # Startup script. Starts uvicorn.
+└── py.typed      # mypy related file.
 ```
 
 </details>
@@ -177,6 +179,61 @@ make run
 
 > <http://localhost:8000/redocs>
 
+## Deployments
+
+### Deploy locally with Compose v2
+
+First thing first, to run the entire platform, you have to clone the `brave-date` submodule using the following command:
+
+```sh
+git submodule update --init --recursive
+```
+
+Once that is done, make sure you have [compose v2](https://github.com/docker/compose) installed and configured on your machine, and run the following command to build the predefined docker services(make sure you have a .env file beforehand):
+
+**Using Make**
+
+```sh
+make build
+```
+
+or simply running:
+
+```
+docker compose build
+```
+
+Once that is done, you can spin up the containers:
+
+**Using Make**
+
+```sh
+make up
+```
+
+or running:
+
+```
+docker compose up
+```
+
+Wait until the client service becomes available:
+
+```sg
+brave-date-client-1      | Starting the development server...
+```
+
+You can stop the running containers but issuing the following command on a separate terminal session:
+
+```
+make down
+```
+
+### Deta Micros (Endpoints not working)
+
+You'll need to create a Deta account to use the Deta version of the APIs.
+
+[![Deploy on Deta](https://button.deta.dev/1/svg)](https://go.deta.dev/deploy?repo=https://github.com/brave-date/brave-date-server)
 
 #### Deta CLI
 
@@ -269,10 +326,6 @@ heroku open --app=<your app name>
 ```
 
 You can refer to [heroku dev center](https://devcenter.heroku.com/articles/local-development-with-docker-compose) for more info. Happy Herokuing!
-
-### Vercel
-
-[![Deploy on Vercel](https://camo.githubusercontent.com/f209ca5cc3af7dd930b6bfc55b3d7b6a5fde1aff/68747470733a2f2f76657263656c2e636f6d2f627574746f6e)](https://vercel.com/import/project?template=https://github.com/brave-date/brave-date-server)
 
 
 ## Core Dependencies
