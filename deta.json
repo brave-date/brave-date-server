@@ -1,0 +1,51 @@
+{
+  "description": "A Fully Async-based backend for Brave Date built using FastAPI, ODMantic, MongoDB, Deta, and friends.",
+  "env": [
+    {
+      "description": "This is the user name you'll be creating for remote accesses.",
+      "key": "MONGODB_USERNAME",
+      "required": false,
+      "value": "admin"
+    },
+    {
+      "description": "The corresponding password for that user.",
+      "key": "MONGODB_PASSWORD",
+      "required": true,
+      "value": ""
+    },
+    {
+      "description": "Your remote MongoDB server's domain name.",
+      "key": "MONGODB_HOST",
+      "required": true,
+      "value": ""
+    },
+    {
+      "description": "The name of the database you want to access, in our case, the `tinder` database.",
+      "key": "MONGODB_DATABASE",
+      "required": true,
+      "value": "tinder"
+    },
+    {
+      "description": "Secret used to sign the JWTs",
+      "key": "JWT_SECRET_KEY",
+      "required": true
+    },
+    {
+      "description": "Your Deta project key.",
+      "key": "DETA_PROJECT_KEY",
+      "required": true
+    },
+    {
+      "description": "Comma separated urls of the deployed client.",
+      "key": "CORS_ORIGINS",
+      "required": true
+    },
+    {
+      "description": "This environment variable defines the debug level.`` means production. `info` to access the docs.",
+      "key": "DEBUG",
+      "required": true
+    }
+  ],
+  "name": "brave-date",
+  "runtime": "python3.9"
+}
