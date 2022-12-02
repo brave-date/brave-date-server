@@ -148,9 +148,4 @@ async def websocket_chat_endpoint(
         message = f"An exception {ex} occurred. Arguments:\n{ex.args!r}"
         logger.error(message)
         logger.warning("Disconnecting Websocket")
-        data = {
-            "content": f"{sender.first_name} went offline.",  # type: ignore
-            "type": "leave",
-        }
-        await manager.broadcast(json.dumps(data, default=str))
         await manager.disconnect(websocket)

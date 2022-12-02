@@ -114,8 +114,16 @@ async def get_user_matches(
     )
     if match:
         matches = match.matches
+        user_list_ids = []
+        for match_user_id in matches:
+            match = await session.find_one(
+                matches_models.Match,
+                matches_models.Match.user == match_user_id,
+            )
+            if match and user_id in match.matches:
+                user_list_ids.append(match_user_id)
         users = await session.find(
-            users_models.User, users_models.User.id.in_(matches)
+            users_models.User, users_models.User.id.in_(user_list_ids)
         )
         return {"status_code": 200, "result": jsonable_encoder(users)}
     return {"status_code": 400, "message": "You don't have matches!"}
