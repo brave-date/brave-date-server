@@ -7,13 +7,17 @@
 [![Static typing: mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/brave-date/brave-date-server/main.svg)](https://results.pre-commit.ci/latest/github/brave-date/brave-date-server/main)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+![Codeql](https://github.com/github/docs/actions/workflows/codeql.yml/badge.svg)
 
 </div>
+
+[![Architecture](https://github.com/brave-date/brave-date/blob/docs/docs/static/images/architecture.png)](https://github.com/brave-date/brave-date-server)
 
 A Fully Async-based backend for [Brave Date](https://github.com/brave-date/brave-date).
 
 ## Table of Contents
 
+- [Database](#database)
 - [Development Requirements](#development-requirements)
 - [Project Structure](#project-structure)
 - [Installation with Make](#installation-with-make)
@@ -22,6 +26,12 @@ A Fully Async-based backend for [Brave Date](https://github.com/brave-date/brave
 - [Deployments](#deployments)
 - [Core Dependencies](#core-dependencies)
 - [License](#license)
+
+## Database
+
+[![Brave Date Database Collections](https://brave-date.github.io/brave-date/static/images/collections.png)](https://brave-date.github.io/brave-date/data-models)
+
+You can refer to the official documentation for detailed information about [the database collections](https://docs.brave-date.wiseai.dev/data-models) and how data was modeled.
 
 ## Development Requirements
 
