@@ -24,7 +24,7 @@ from app.config import (
     settings,
 )
 from app.users import (
-    crud as user_crud,
+    crud as users_crud,
     schemas as users_schemas,
 )
 from app.utils import (
@@ -71,7 +71,7 @@ async def get_all_users(
     """
     Fetch all users available in the app and not in the matches list.
     """
-    return await user_crud.get_users(current_user.id, session)
+    return await users_crud.get_users(current_user.id, session)
 
 
 @router.get("/user/logout")
@@ -85,7 +85,7 @@ async def logout(
     """
     Log out a user from the app by removing the access token from the list.
     """
-    await user_crud.remove_token(current_user.id, token, session)
+    await users_crud.remove_token(current_user.id, token, session)
     return {"status": 200, "message": "Good Bye!"}
 
 
@@ -103,7 +103,7 @@ async def upload_profile_image(
     try:
         file_name = "user/" + str(current_user.id) + "/" + "profile.png"
         profile_images.put(file_name, file.file)
-        await user_crud.update_profile_picture(
+        await users_crud.update_profile_picture(
             email=current_user.email, file_name=file_name, session=session
         )
         return {
@@ -129,3 +129,38 @@ async def get_profile_user_image(
         )
     except Exception:
         return {"status_code": 400, "message": "Something went wrong!"}
+
+
+@router.put("/user/reset-password")
+async def reset_user_password(
+    request: users_schemas.ResetPassword,
+    current_user: users_schemas.UserObjectSchema = Depends(
+        jwt.get_current_active_user
+    ),
+    session: AIOSession = Depends(dependencies.get_db_transactional_session),
+) -> Dict[str, Any]:
+    """
+    An endpoint for resetting users passwords.
+    """
+    result = await users_crud.update_user_password(
+        request, current_user.email, session
+    )
+    return result
+
+
+@router.put("/user/profile")
+async def update_personal_information(
+    personal_info: users_schemas.PersonalInfo,
+    current_user: users_schemas.UserObjectSchema = Depends(
+        jwt.get_current_active_user
+    ),
+    session: AIOSession = Depends(dependencies.get_db_transactional_session),
+) -> Dict[str, Any]:
+    """
+    An endpoint for updating users personel info.
+    """
+    await users_crud.update_user_info(personal_info, current_user, session)
+    return {
+        "status_code": 200,
+        "message": "Your personal information has been updated successfully!",
+    }
