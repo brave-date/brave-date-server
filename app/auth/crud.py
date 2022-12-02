@@ -120,7 +120,7 @@ async def login_user(
     if not is_valid:
         return {"status_code": 401, "message": "Invalid Credentials!"}
 
-    access_token_expires = timedelta(minutes=60)
+    access_token_expires = timedelta(days=15)
     access_token = await jwt.create_access_token(
         data={"sub": form_data.username},
         expires_delta=access_token_expires,
@@ -176,7 +176,7 @@ async def register_user(
     user.password = crypt.get_password_hash(user.password)
     await create_user(user, session)
     user = await find_existed_user(user.email, session)
-    access_token_expires = timedelta(minutes=60)
+    access_token_expires = timedelta(days=15)
     access_token = await jwt.create_access_token(
         data={"sub": user.email},
         expires_delta=access_token_expires,
