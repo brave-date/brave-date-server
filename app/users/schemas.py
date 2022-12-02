@@ -104,3 +104,24 @@ class UsersSchema(BaseModel):
             ),
         ],
     )
+
+
+class ResetPassword(BaseModel):
+    """
+    A Pydantic class that defines the users schema for the reset password endpoint.
+    """
+
+    old_password: str = Field(..., example="Your old password.")
+    new_password: str = Field(..., example="Your new password.")
+    confirm_password: str = Field(..., example="Your new password.")
+
+
+class PersonalInfo(BaseModel):
+    """
+    A Pydantic class that defines the users schema for the updating user info.
+    """
+
+    first_name: str = Field(..., example="First name.")
+    last_name: str = Field(..., example="Last Name.")
+    passion: str = Field(..., example="Cardio.")
+    phone_number: str = Field(..., example="123456789")

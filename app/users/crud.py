@@ -18,6 +18,7 @@ from typing import (
 )
 
 from app.auth import (
+    crud as auth_crud,
     models as auth_models,
 )
 from app.matches import (
@@ -25,6 +26,10 @@ from app.matches import (
 )
 from app.users import (
     models as users_models,
+    schemas as users_schemas,
+)
+from app.utils import (
+    crypt,
 )
 
 
@@ -98,3 +103,70 @@ async def update_profile_picture(
     )
     user.profile_picture = file_name
     await session.save(user)
+
+
+async def update_user_password(
+    request: users_schemas.ResetPassword, email: EmailStr, session: AIOSession
+) -> Dict[str, Any]:
+    """
+    A method for resetting authenticated user's password.
+
+    Args:
+        request (users_schemas.ResetPassword) : A request schema object for reset password.
+        email (pydantic.EmailStr) : A user email address.
+        session (odmantic.session.AIOSession) : odmantic session object.
+    """
+    user = await auth_crud.find_existed_user(email, session)
+    if not crypt.verify_password(request.old_password, user.password):
+        results = {
+            "status_code": 400,
+            "message": "Your old password is not correct!",
+        }
+    elif crypt.verify_password(request.new_password, user.password):
+        results = {
+            "status_code": 400,
+            "message": "Your new password can't be your old one!",
+        }
+    elif not request.new_password == request.confirm_password:
+        results = {
+            "status_code": 400,
+            "message": "Please confirm your new password!",
+        }
+    else:
+        user.update(
+            {
+                "password": crypt.get_password_hash(request.new_password),
+                "modified_date": datetime.utcnow(),
+            }
+        )
+        await session.save(user)
+        results = {
+            "status_code": 200,
+            "message": "Your password has been reseted successfully!",
+        }
+    return results
+
+
+async def update_user_info(
+    personal_info: users_schemas.PersonalInfo,
+    current_user: users_schemas.UserObjectSchema,
+    session: AIOSession,
+) -> None:
+    """
+    A method for resetting authenticated user's password.
+
+    Args:
+        personal_info (users_schemas.PersonalInfo) : User personal info schema object.
+        current_user (users_schemas.UserObjectSchema) : User schema object.
+        session (odmantic.session.AIOSession) : odmantic session object.
+    """
+    current_user.update(
+        {
+            "first_name": personal_info.first_name,
+            "last_name": personal_info.last_name,
+            "passion": personal_info.passion,
+            "phone_number": personal_info.passion,
+            "modified_date": datetime.utcnow(),
+        }
+    )
+    await session.save(current_user)
