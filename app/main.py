@@ -129,7 +129,6 @@ def serve() -> None:
     A method that run a uvicorn command.
     """
     try:
-
         uvicorn.run(
             "app.main:tinder_app",
             host="0.0.0.0",
