@@ -1,12 +1,4 @@
 """The messages crud module"""
-from pinatapy import (
-    PinataPy,
-)
-import os
-from tempfile import (
-    NamedTemporaryFile,
-)
-
 from bson import (
     ObjectId,
 )
@@ -17,8 +9,15 @@ import logging
 from odmantic.session import (
     AIOSession,
 )
+import os
+from pinatapy import (
+    PinataPy,
+)
 from pydantic import (
     EmailStr,
+)
+from tempfile import (
+    NamedTemporaryFile,
 )
 from typing import (
     Any,
@@ -45,6 +44,7 @@ from app.users import (
 logger = logging.getLogger(__name__)
 
 pinata = PinataPy(settings().PINATA_API_KEY, settings().PINATA_API_SECRET)
+
 
 async def send_new_message(
     sender_id: str,
@@ -79,9 +79,7 @@ async def send_new_message(
             with temp as temp_file:
                 temp_file.write(file)
             result = pinata.pin_file_to_ipfs(temp.name)
-            image_url = (
-                f"https://ipfs.io/ipfs/{result['IpfsHash']}/{temp.name.split('/')[-1]}"
-            )
+            image_url = f"https://ipfs.io/ipfs/{result['IpfsHash']}/{temp.name.split('/')[-1]}"
             # create a new message
             new_message = messages_models.Message(
                 content="", message_type="media", media=image_url, status=1

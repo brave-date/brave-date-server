@@ -1,12 +1,5 @@
 """The users router module"""
 
-from pinatapy import (
-    PinataPy,
-)
-import os
-from tempfile import (
-    NamedTemporaryFile,
-)
 from fastapi import (
     APIRouter,
     Depends,
@@ -19,6 +12,13 @@ from fastapi.encoders import (
 )
 from odmantic.session import (
     AIOSession,
+)
+import os
+from pinatapy import (
+    PinataPy,
+)
+from tempfile import (
+    NamedTemporaryFile,
 )
 from typing import (
     Any,
@@ -41,6 +41,7 @@ from app.utils import (
 router = APIRouter(prefix="/api/v1")
 
 pinata = PinataPy(settings().PINATA_API_KEY, settings().PINATA_API_SECRET)
+
 
 @router.get("/user/profile", response_model=users_schemas.UserSchema)
 async def get_user_profile(
@@ -107,9 +108,7 @@ async def upload_profile_image(
         with temp as temp_file:
             temp_file.write(file_bytes)
         result = pinata.pin_file_to_ipfs(temp.name)
-        image_url = (
-            f"https://ipfs.io/ipfs/{result['IpfsHash']}/{temp.name.split('/')[-1]}"
-        )
+        image_url = f"https://ipfs.io/ipfs/{result['IpfsHash']}/{temp.name.split('/')[-1]}"
         await users_crud.update_profile_picture(
             email=current_user.email, file_name=image_url, session=session
         )
@@ -123,6 +122,7 @@ async def upload_profile_image(
 
     finally:
         os.remove(temp.name)
+
 
 @router.put("/user/reset-password")
 async def reset_user_password(

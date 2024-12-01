@@ -35,9 +35,9 @@ from app.utils import (
     jwt,
 )
 
-#deta = Deta(settings().DETA_PROJECT_KEY)
+# deta = Deta(settings().DETA_PROJECT_KEY)
 
-#sent_images = deta.Drive("sent-images")
+# sent_images = deta.Drive("sent-images")
 
 router = APIRouter(prefix="/api/v1")
 
@@ -117,7 +117,7 @@ async def get_sent_user_chat_images(
         responses: return a response object for a given url(image).
     """
     try:
-        #img = sent_images.get(f"/chat/images/user/{user_id}/{uuid_val}")
+        # img = sent_images.get(f"/chat/images/user/{user_id}/{uuid_val}")
         return responses.StreamingResponse(
             [].iter_chunks(), media_type="image/png"
         )

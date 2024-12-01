@@ -6,7 +6,7 @@ path.append(".")
 
 from app.main import (
     get_app,
-    serve
+    serve,
 )
 
 app = get_app()
