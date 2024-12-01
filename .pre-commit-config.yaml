@@ -4,7 +4,7 @@ exclude: ".git|.tox"
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
       - id: check-added-large-files
@@ -64,6 +64,6 @@ repos:
           - "--ignore-init-module-imports"
 
   - repo: https://github.com/PyCQA/pylint
-    rev: 'v2.17.1'
+    rev: 'v3.3.0'
     hooks:
       - id: pylint
