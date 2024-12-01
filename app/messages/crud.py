@@ -1,4 +1,5 @@
 """The messages crud module"""
+
 from bson import (
     ObjectId,
 )
