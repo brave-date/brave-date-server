@@ -1,12 +1,10 @@
 """The users router module"""
 
-from deta import Deta
 from fastapi import (
     APIRouter,
     Depends,
     File,
     UploadFile,
-    responses,
 )
 from fastapi.encoders import (
     jsonable_encoder,
@@ -14,10 +12,16 @@ from fastapi.encoders import (
 from odmantic.session import (
     AIOSession,
 )
+import os
+from pinatapy import (
+    PinataPy,
+)
+from tempfile import (
+    NamedTemporaryFile,
+)
 from typing import (
     Any,
     Dict,
-    Union,
 )
 
 from app.config import (
@@ -34,11 +38,7 @@ from app.utils import (
 
 router = APIRouter(prefix="/api/v1")
 
-# initialize with a project key
-deta = Deta(settings().DETA_PROJECT_KEY)
-
-# create and use as many Drives as you want!
-profile_images = deta.Drive("profile-images")
+pinata = PinataPy(settings().PINATA_API_KEY, settings().PINATA_API_SECRET)
 
 
 @router.get("/user/profile", response_model=users_schemas.UserSchema)
@@ -98,13 +98,17 @@ async def upload_profile_image(
     session: AIOSession = Depends(dependencies.get_db_transactional_session),
 ) -> Dict[str, Any]:
     """
-    Upload an image to a Deta drive.
+    Upload an image to Pinata Cloud.
     """
     try:
-        file_name = "user/" + str(current_user.id) + "/" + "profile.png"
-        profile_images.put(file_name, file.file)
+        file_bytes = file.file.read()
+        temp = NamedTemporaryFile(delete=False)
+        with temp as temp_file:
+            temp_file.write(file_bytes)
+        result = pinata.pin_file_to_ipfs(temp.name)
+        image_url = f"https://ipfs.io/ipfs/{result['IpfsHash']}/{temp.name.split('/')[-1]}"  # noqa: E231
         await users_crud.update_profile_picture(
-            email=current_user.email, file_name=file_name, session=session
+            email=current_user.email, file_name=image_url, session=session
         )
         return {
             "status_code": 200,
@@ -114,21 +118,8 @@ async def upload_profile_image(
     except Exception:
         return {"status_code": 400, "message": "Something went wrong!"}
 
-
-@router.get("/user/{user_id}/profile.png")
-async def get_profile_user_image(
-    user_id: str,
-) -> Union[responses.StreamingResponse, Dict[str, Any]]:
-    """
-    An endpoint for streaming images.
-    """
-    try:
-        img = profile_images.get(f"user/{user_id}/profile.png")
-        return responses.StreamingResponse(
-            img.iter_chunks(), media_type="image/png"
-        )
-    except Exception:
-        return {"status_code": 400, "message": "Something went wrong!"}
+    finally:
+        os.remove(temp.name)
 
 
 @router.put("/user/reset-password")

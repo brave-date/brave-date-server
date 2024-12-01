@@ -27,7 +27,8 @@ class Settings(BaseSettings):
         JWT_SECRET_KEY (str) : A secure app jwt secret key.
         DEBUG (str) : A variable used to separate testing env from production env.
         CORS_ORIGINS (str) : A string that contains comma separated urls for cors origins.
-        DETA_PROJECT_KEY (str) : A Deta project key.
+        PINATA_API_KEY (str) : A Pinata api key.
+        PINATA_API_SECRET (str) : A Pinata api secret.
 
     Example:
         >>> MONGODB_HOST=svc-123456789.svc.MONGODB.com
@@ -37,7 +38,8 @@ class Settings(BaseSettings):
         >>> JWT_SECRET_KEY=123SDA23sa
         >>> DEBUG="" # "" means production, "test" means testing, "info" means development.
         >>> CORS_ORIGINS="https://app-name.herokuapp.com,http://app-name.pages.dev"
-        >>> DETA_PROJECT_KEY=12312dSDJHJSBA
+        >>> PINATA_API_KEY=12312dSDJHJSBA
+        >>> PINATA_API_SECRET=12312dSDJHJSBA
     """
 
     MONGODB_HOST: str = os.getenv("MONGODB_HOST")  # type: ignore
@@ -47,7 +49,8 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")  # type: ignore
     DEBUG: str = os.getenv("DEBUG")  # type: ignore
     CORS_ORIGINS: str = os.getenv("CORS_ORIGINS")  # type: ignore
-    DETA_PROJECT_KEY: str = os.getenv("DETA_PROJECT_KEY")  # type: ignore
+    PINATA_API_KEY: str = os.getenv("PINATA_API_KEY")  # type: ignore
+    PINATA_API_SECRET: str = os.getenv("PINATA_API_SECRET")  # type: ignore
 
     class Config:  # pylint: disable=R0903
         """

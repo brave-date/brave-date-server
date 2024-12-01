@@ -1,6 +1,5 @@
 """The messages router module"""
 
-from deta import Deta
 from fastapi import (
     APIRouter,
     Depends,
@@ -21,9 +20,6 @@ from typing import (
 from app.auth import (
     schemas as auth_schemas,
 )
-from app.config import (
-    settings,
-)
 from app.messages import (
     crud as messages_crud,
     schemas as messages_schemas,
@@ -36,9 +32,9 @@ from app.utils import (
     jwt,
 )
 
-deta = Deta(settings().DETA_PROJECT_KEY)
+# deta = Deta(settings().DETA_PROJECT_KEY)
 
-sent_images = deta.Drive("sent-images")
+# sent_images = deta.Drive("sent-images")
 
 router = APIRouter(prefix="/api/v1")
 
@@ -118,9 +114,9 @@ async def get_sent_user_chat_images(
         responses: return a response object for a given url(image).
     """
     try:
-        img = sent_images.get(f"/chat/images/user/{user_id}/{uuid_val}")
+        # img = sent_images.get(f"/chat/images/user/{user_id}/{uuid_val}")
         return responses.StreamingResponse(
-            img.iter_chunks(), media_type="image/png"
+            [].iter_chunks(), media_type="image/png"  # type: ignore
         )
     except Exception:  # pylint: disable=W0703
         return {"status_code": 400, "message": "Something went wrong!"}
