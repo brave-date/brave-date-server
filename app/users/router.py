@@ -108,7 +108,7 @@ async def upload_profile_image(
         with temp as temp_file:
             temp_file.write(file_bytes)
         result = pinata.pin_file_to_ipfs(temp.name)
-        image_url = f"https://ipfs.io/ipfs/{result['IpfsHash']}/{temp.name.split('/')[-1]}"
+        image_url = f"https://ipfs.io/ipfs/{result['IpfsHash']}/{temp.name.split('/')[-1]}"  # noqa: E231
         await users_crud.update_profile_picture(
             email=current_user.email, file_name=image_url, session=session
         )
