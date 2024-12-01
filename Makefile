@@ -10,7 +10,6 @@ help:
 	@echo "venv                     Create a virtual environment"
 	@echo "install                  Install the package and all required core dependencies"
 	@echo "run                      Running the app locally"
-	@echo "deploy-deta              Deploy the app on a Deta Micro"
 	@echo "clean                    Remove all build, test, coverage and Python artifacts"
 	@echo "lint                     Check style with pre-commit"
 	@echo "test                     Run tests quickly with pytest"
@@ -18,7 +17,6 @@ help:
 	@echo "build                    Build docker containers services"
 	@echo "up                       Spin up the built containers"
 	@echo "down                     Stop all running containers"
-	@echo "coverage                 Check code coverage quickly with the default Python"
 
 clean: clean-build clean-pyc clean-test
 
@@ -50,10 +48,7 @@ venv:
 	@echo ""
 	@echo "*** make virtual env ***"
 	@echo ""
-	(rm -rf .venv; python3 -m venv .venv; source .venv/bin/activate;)
-	@echo ""
-	@echo "please activate your virtualenv by running:"
-	@echo "source .venv/bin/activate"
+	(rm -rf .venv; uv venv -p 3.12 --python-preference managed; .  .venv/bin/activate;)
 	@echo ""
 
 lint:
@@ -80,37 +75,13 @@ test-all:
 	tox
 	@echo ""
 
-coverage:
-	@echo ""
-	@echo "*** Checking code coverage, and generating a report... ***"
-	@echo ""
-	@echo ""
-	tox -e coverage
-	poetry run $(BROWSER) htmlcov/index.html
-	@echo ""
-
 install: generate_dot_env
 	@echo ""
 	@echo "*** Generating a .env file and installing the required dependencies... ***"
 	@echo ""
 	@echo ""
-	: `curl -sSL https://install.python-poetry.org | python3 - --uninstall`
-	: `rm -rf /home/${USER}/.poetry`
-	: `rm -rf /home/${USER}/.pyenv/shims/poetry`
-	curl -sSL https://install.python-poetry.org | python3 - --version 1.2.2
-	poetry install --only main
-	@echo ""
-
-docker-install:
-	@echo ""
-	@echo "*** installing the required dependencies... ***"
-	@echo ""
-	@echo ""
-	: `curl -sSL https://install.python-poetry.org | python3 - --uninstall`
-	: `rm -rf /home/${USER}/.poetry`
-	: `rm -rf /home/${USER}/.pyenv/shims/poetry`
-	curl -sSL https://install.python-poetry.org | python3 - --version 1.2.2
-	/root/.local/bin/poetry install --only main --no-root
+	curl -LSf https://astral.sh/uv/install.sh | sh
+	uv pip install -r pyproject.toml
 	@echo ""
 
 docker-run:
@@ -126,27 +97,11 @@ run:
 	@echo "*** Running the app locally... ***"
 	@echo ""
 	@echo ""
-	poetry run server
-	@echo ""
-
-deploy-deta:
-	@echo ""
-	@echo "*** Deploying the app on a Deta Micros... ***"
-	@echo ""
-	@echo "*** Running `deta login`... ***"
-	deta login
-	@echo "*** Running `deta new .`... ***"
-	deta new .
-	@echo "*** Running `deta deploy`... ***"
-	deta deploy
-	@echo "*** Running `deta auth disable`... ***"
-	deta auth disable
-	@echo "*** Running `deta update -e .env`... ***"
-	deta update -e .env
+	uv run main.py
 	@echo ""
 
 dist: clean ## builds source and wheel package
-	poetry build
+	uv build
 
 build:
 	docker compose --file docker-compose.yml build

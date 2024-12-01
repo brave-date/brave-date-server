@@ -145,7 +145,7 @@ async def websocket_chat_endpoint(
                 )
                 await manager.connect(websocket)
     except Exception as ex:
-        message = f"An exception {ex} occurred. Arguments:\n{ex.args!r}"
+        message = f"An exception {ex} occurred. Arguments:\n{ex.args!r}"  # noqa: E231
         logger.error(message)
         logger.warning("Disconnecting Websocket")
         await manager.disconnect(websocket)
