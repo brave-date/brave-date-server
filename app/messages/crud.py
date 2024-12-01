@@ -79,7 +79,7 @@ async def send_new_message(
             with temp as temp_file:
                 temp_file.write(file)
             result = pinata.pin_file_to_ipfs(temp.name)
-            image_url = f"https://ipfs.io/ipfs/{result['IpfsHash']}/{temp.name.split('/')[-1]}"
+            image_url = f"https://ipfs.io/ipfs/{result['IpfsHash']}/{temp.name.split('/')[-1]}"  # noqa: E231
             # create a new message
             new_message = messages_models.Message(
                 content="", message_type="media", media=image_url, status=1
