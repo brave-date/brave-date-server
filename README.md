@@ -36,8 +36,10 @@ You can refer to the official documentation for detailed information about [the 
 ## Development Requirements
 
 - Make (GNU command)
-- Python (>= 3.9)
-- Poetry (1.2)
+- Python (>= 3.12)
+- UV (>= 0.5)
+
+If you don't have Python installed yet, it is recommended to use [uv](https://github.com/astral-sh/uv) to manage your Python versions and virtual environments.
 
 ## Project Structure
 
@@ -97,7 +99,6 @@ Please use 'make <target>' where <target> is one of:
 venv                     Create a virtual environment
 install                  Install the package and all required core dependencies
 run                      Running the app locally
-deploy-deta              Deploy the app on a Deta Micro
 clean                    Remove all build, test, coverage and Python artifacts
 lint                     Check style with pre-commit
 test                     Run tests quickly with pytest
@@ -144,17 +145,18 @@ MONGODB_HOST=cluster_name.example.mongodb.net
 MONGODB_DATABASE=tinder
 ```
 
-### 6. Create a Deta Account
+### 6. Create a Pinata Cloud Account
 
-Create a free account on [Deta](https://www.deta.sh/), and create a new project.
+Create a free account on [Pinata Cloud](https://www.pinata.cloud/) and set up your API key by creating a new API key in your account dashboard.
 
-### 7. Set your Deta project key
+### 7. Set your Pinata Cloud API Key and Secret
 
-Set the following environment variable in your `.env` file according to your project key value:
+Set the following environment variables in your `.env` file according to the API key and secret from your Pinata Cloud account:
 
 ```yaml
-# Deta
-DETA_PROJECT_KEY=
+# Pinata Cloud
+PINATA_API_KEY=
+PINATA_API_SECRET=
 ```
 
 ### 8. Generate a secret key
@@ -238,42 +240,6 @@ You can stop the running containers but issuing the following command on a separ
 ```
 make down
 ```
-
-### Deta Micros (Endpoints not working)
-
-You'll need to create a Deta account to use the Deta version of the APIs.
-
-[![Deploy on Deta](https://button.deta.dev/1/svg)](https://go.deta.dev/deploy?repo=https://github.com/brave-date/brave-date-server)
-
-#### Deta CLI
-
-Make sure you have Deta CLI installed on your machine. If it is not the case, just run the following command(on a Linux distro or Mac):
-
-```sh
-curl -fsSL https://get.deta.dev/cli.sh | sh
-```
-
-Manually add `/home/<user_name>/.deta/bin/deta` to your path:
-
-```sh
-PATH="/home/<user_name>/.deta/bin:$PATH"
-```
-
-Now you can deploy the app on a Deta Micro:
-
-```sh
-make deploy-deta
-```
-
-You can then use the Deta UI to check the logs and the URL the API is hosted on.
-
-**Notes**:
-
-- _Make sure your `.env` file is being provided with valid env vars values accordingly._
-
-- _The `main.py` file is used as an entry point for Deta. The same goes for `requirements.txt`._
-
-- _Deta Micros are limited to 512MB per deployment._
 
 ### Heroku
 

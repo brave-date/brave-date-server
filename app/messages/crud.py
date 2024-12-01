@@ -1,4 +1,11 @@
 """The messages crud module"""
+from pinatapy import (
+    PinataPy,
+)
+import os
+from tempfile import (
+    NamedTemporaryFile,
+)
 
 from bson import (
     ObjectId,
@@ -6,7 +13,6 @@ from bson import (
 from datetime import (
     datetime,
 )
-from deta import Deta
 import logging
 from odmantic.session import (
     AIOSession,
@@ -38,10 +44,7 @@ from app.users import (
 
 logger = logging.getLogger(__name__)
 
-deta = Deta(settings().DETA_PROJECT_KEY)
-
-images = deta.Drive("sent-images")
-
+pinata = PinataPy(settings().PINATA_API_KEY, settings().PINATA_API_SECRET)
 
 async def send_new_message(
     sender_id: str,
@@ -70,14 +73,25 @@ async def send_new_message(
                 "status_code": 400,
                 "message": "You can't upload an empty file!",
             }
-        file_name = (
-            f"/chat/images/user/{str(sender_id)}/image_{str(uuid.uuid4())}.png"
-        )
-        images.put(file_name, file)
-        # create a new message
-        new_message = messages_models.Message(
-            content="", message_type="media", media=file_name, status=1
-        )
+
+        try:
+            temp = NamedTemporaryFile(delete=False)
+            with temp as temp_file:
+                temp_file.write(file)
+            result = pinata.pin_file_to_ipfs(temp.name)
+            image_url = (
+                f"https://ipfs.io/ipfs/{result['IpfsHash']}/{temp.name.split('/')[-1]}"
+            )
+            # create a new message
+            new_message = messages_models.Message(
+                content="", message_type="media", media=image_url, status=1
+            )
+
+        except Exception:
+            ...
+
+        finally:
+            os.remove(temp.name)
     else:
         if not request.content:
             return {
@@ -130,7 +144,7 @@ async def send_new_message(
         )
     await session.save(conversation)
     if request.message_type == "media":
-        return file_name
+        return image_url
     return {
         "status_code": 201,
         "message": "A new message has been delivered successfully!",
