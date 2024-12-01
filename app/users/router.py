@@ -5,7 +5,6 @@ from fastapi import (
     Depends,
     File,
     UploadFile,
-    responses,
 )
 from fastapi.encoders import (
     jsonable_encoder,
@@ -23,7 +22,6 @@ from tempfile import (
 from typing import (
     Any,
     Dict,
-    Union,
 )
 
 from app.config import (

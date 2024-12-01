@@ -20,9 +20,6 @@ from typing import (
 from app.auth import (
     schemas as auth_schemas,
 )
-from app.config import (
-    settings,
-)
 from app.messages import (
     crud as messages_crud,
     schemas as messages_schemas,

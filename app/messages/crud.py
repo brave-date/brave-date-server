@@ -25,7 +25,6 @@ from typing import (
     Optional,
     Union,
 )
-import uuid
 
 from app.auth import (
     crud as auth_crud,
