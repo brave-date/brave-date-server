@@ -119,7 +119,7 @@ async def get_sent_user_chat_images(
     try:
         # img = sent_images.get(f"/chat/images/user/{user_id}/{uuid_val}")
         return responses.StreamingResponse(
-            [].iter_chunks(), media_type="image/png"
+            [].iter_chunks(), media_type="image/png" # type: ignore
         )
     except Exception:  # pylint: disable=W0703
         return {"status_code": 400, "message": "Something went wrong!"}
